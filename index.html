@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>PROTOCOLO ALFA — CLASSIFICADO</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: "Courier New", Courier, monospace;
+      color: black;
+      padding: 30px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      border-bottom: 2px solid black;
+      padding-bottom: 5px;
+    }
+
+    .aviso {
+      background-color: #ffcccc;
+      border: 2px solid red;
+      padding: 10px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .conteudo {
+      max-width: 800px;
+      margin: auto;
+      line-height: 1.6;
+    }
+
+    .tabela {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+
+    .tabela th, .tabela td {
+      border: 1px solid black;
+      padding: 6px;
+      text-align: left;
+    }
+
+    .voltar {
+      margin-top: 50px;
+      text-align: center;
+    }
+
+    .voltar button {
+      padding: 10px 20px;
+      font-family: inherit;
+      cursor: pointer;
+      background-color: black;
+      color: white;
+      border: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PROTOCOLO ALFA</h1>
+  <div class="aviso">
+    ⚠️ ARQUIVO CLASSIFICADO — ACESSO RESTRITO A AGENTES NÍVEL 6+
+  </div>
+
+  <div class="conteudo">
+    <h2>RESUMO DO PROTOCOLO</h2>
+    <p>
+      O Protocolo Alfa foi ativado em 18 de julho de 1994 após o desaparecimento completo de uma patrulha militar brasileira durante operação de vigilância em áreas não mapeadas da Floresta Amazônica. 
+      A missão liderada por Marcos Moderno — veterano de reconhecimento da selva — tinha como objetivo a verificação de rumores sobre figuras hostis não humanas na região.
+    </p>
+
+    <p>
+      A última comunicação recebida da equipe mencionava “sombras nas árvores” e “sussurros imitando vozes conhecidas”. Acredita-se que entidades hostis estariam testando o comportamento humano e capacidade de rastreio em área de floresta densa.
+    </p>
+
+    <h2>DADOS DA PATRULHA</h2>
+    <table class="tabela">
+      <tr>
+        <th>Nome</th>
+        <th>Função</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Marcos Moderno</td>
+        <td>Líder de patrulha</td>
+        <td>Desaparecido (presumido morto)</td>
+      </tr>
+      <tr>
+        <td>Caio Ferreira</td>
+        <td>Especialista em rastreamento</td>
+        <td>Desaparecido</td>
+      </tr>
+      <tr>
+        <td>Rafael Tavares</td>
+        <td>Operador de rádio</td>
+        <td>Desaparecido</td>
+      </tr>
+      <tr>
+        <td>Patrícia V. Lima</td>
+        <td>Oficial de inteligência</td>
+        <td>Desaparecida</td>
+      </tr>
+    </table>
+
+    <h2>DESCRIÇÃO DA ANOMALIA</h2>
+    <p>
+      Entidade(s) suspeita(s) de serem **hostis metamórficas**, com habilidades vocais miméticas e deslocamento não rastreável. Foi mencionado um “sinal vermelho pulsante” antes da interrupção final da transmissão.
+      Há suspeitas de interferência psíquica. Câmeras térmicas retornaram com calor desproporcional em zonas onde não havia vida detectada.
+    </p>
+
+    <h2>RECOMENDAÇÕES</h2>
+    <ul>
+      <li>Evitar operações solo em áreas sem cobertura de satélite.</li>
+      <li>Qualquer padrão auditivo incomum deve ser tratado como ameaça real.</li>
+      <li>Relatos sobre “vozes familiares” em locais de isolamento devem ser ignorados e reportados imediatamente.</li>
+    </ul>
+<button class="btn90" onclick="mostrarImagem()">Abrir imagem adicional</button>
+<img id="imagemExtra" src="kin_registro2.png" alt="Imagem extra do Kin" style="display:none; max-width:100%; border-radius:6px; margin-top: 15px; border: 2px solid #00ff00;">
+
+<script>
+  function mostrarImagem() {
+    const img = document.getElementById('imagemExtra');
+    img.style.display = img.style.display === 'none' ? 'block' : 'none';
+  }
+</script>
+
+<style>
+  .btn90 {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    color: #00ff00;
+    background-color: #000;
+    border: 3px solid #00ff00;
+    padding: 8px 18px;
+    cursor: pointer;
+    box-shadow:
+      0 0 5px #00ff00,
+      inset 0 0 10px #00ff00;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .btn90:hover {
+    background-color: #00ff00;
+    color: #000;
+    box-shadow:
+      0 0 10px #00ff00,
+      inset 0 0 15px #000;
+  }
+</style>
+    </div>
+  </div>
+</body>
+</html>
