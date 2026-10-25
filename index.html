@@ -1,160 +1,343 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>PROTOCOLO ALFA — CLASSIFICADO</title>
-  <style>
-    body {
-      background-color: white;
-      font-family: "Courier New", Courier, monospace;
-      color: black;
-      padding: 30px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protocolo Alfa (classificado)</title>
+<style>
+:root {
+  --ink: #141414;
+  --muted: #5c5c5c;
+  --soft: #f3f3f1;
+  --red: #b3001b;
+  --pink: #fdeaea;
+  --mono: "Courier New", Courier, monospace;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: #fff; color: var(--ink); font-family: var(--mono); font-size: 15px; line-height: 1.7; }
+:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 
-    h1, h2 {
-      text-align: center;
-      border-bottom: 2px solid black;
-      padding-bottom: 5px;
-    }
+.wrap { max-width: 860px; margin: 0 auto; padding: 24px 20px 64px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); }
+.top a { color: inherit; text-decoration: none; border-bottom: 1px solid currentColor; }
 
-    .aviso {
-      background-color: #ffcccc;
-      border: 2px solid red;
-      padding: 10px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 30px;
-    }
+h1 { position: relative; margin: 26px 0 0; padding-bottom: 12px; text-align: center; font-size: clamp(28px, 7vw, 46px); letter-spacing: .22em; border-bottom: 4px double var(--ink); }
+.stamp { position: absolute; right: 0; top: -14px; transform: rotate(6deg); border: 2px solid var(--red); color: var(--red); padding: 2px 10px; font-size: 12px; letter-spacing: .2em; background: #fff; }
+.aviso { margin: 16px 0 0; padding: 10px 14px; background: var(--pink); border: 2px solid var(--red); text-align: center; font-weight: bold; }
 
-    .conteudo {
-      max-width: 800px;
-      margin: auto;
-      line-height: 1.6;
-    }
+.acesso { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 18px 0 0; padding: 12px 14px; border: 1px solid var(--ink); background: var(--soft); }
+.acesso p { margin: 0; flex: 1 1 260px; font-size: 13px; }
+.lv { font: inherit; font-weight: bold; width: 44px; height: 38px; border: 2px solid var(--ink); background: #fff; cursor: pointer; }
+.lv[aria-pressed="true"] { background: var(--ink); color: #fff; }
 
-    .tabela {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 30px;
-    }
+.tabs { display: flex; gap: 4px; margin-top: 26px; overflow-x: auto; border-bottom: 2px solid var(--ink); }
+.tab { flex: none; font: inherit; font-size: 13px; padding: 10px 16px; background: var(--soft); border: 1px solid var(--ink); border-bottom: 0; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--ink); color: #fff; }
 
-    .tabela th, .tabela td {
-      border: 1px solid black;
-      padding: 6px;
-      text-align: left;
-    }
+.panel { padding: 24px 0 8px; }
+h2 { margin: 0 0 14px; padding-bottom: 6px; font-size: 18px; letter-spacing: .08em; border-bottom: 1px solid var(--ink); }
+h3 { margin: 26px 0 8px; font-size: 15px; }
+p { margin: 0 0 14px; max-width: 72ch; }
 
-    .voltar {
-      margin-top: 50px;
-      text-align: center;
-    }
+.tarja { background: var(--ink); color: var(--ink); padding: 0 2px; cursor: not-allowed; user-select: none; transition: background .25s, color .25s; }
+body[data-level="6"] .tarja { background: var(--pink); color: var(--ink); border-bottom: 2px solid var(--red); cursor: default; user-select: auto; }
+.tarja.no { animation: no .35s; }
+@keyframes no { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 
-    .voltar button {
-      padding: 10px 20px;
-      font-family: inherit;
-      cursor: pointer;
-      background-color: black;
-      color: white;
-      border: none;
-      font-weight: bold;
-    }
-  </style>
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 20px; }
+.stat { padding: 12px; border: 1px solid var(--ink); text-align: center; }
+.stat b { display: block; font-size: 26px; line-height: 1.2; }
+.stat span { font-size: 12px; color: var(--muted); }
+
+.btn { font: inherit; font-weight: bold; padding: 10px 18px; background: var(--ink); color: #fff; border: 2px solid var(--ink); cursor: pointer; transition: background .2s, color .2s; }
+.btn:hover { background: #fff; color: var(--ink); }
+.log { min-height: 96px; margin-top: 12px; padding: 10px 14px; border: 1px solid var(--ink); font-size: 14px; }
+.log:empty::before { content: "Nenhuma transmissão em reprodução."; color: var(--muted); }
+.ln { animation: in .3s; }
+.ln.end { color: var(--red); font-weight: bold; }
+@keyframes in { from { opacity: 0; } }
+
+.tabela { width: 100%; border-collapse: collapse; }
+.tabela th, .tabela td { padding: 8px 10px; border: 1px solid var(--ink); text-align: left; vertical-align: top; }
+.tabela th { background: var(--soft); }
+tr.row { cursor: pointer; }
+tr.row:hover { background: var(--soft); }
+tr.row td:first-child::before { content: "+ "; }
+tr.row[aria-expanded="true"] td:first-child::before { content: "\2212  "; }
+tr.det td { background: var(--pink); font-size: 14px; }
+.st { color: var(--red); font-weight: bold; }
+.dica { font-size: 13px; color: var(--muted); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 0; }
+.chip { font: inherit; font-size: 14px; padding: 8px 12px; background: #fff; border: 1px solid var(--ink); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.detail { min-height: 4.5em; margin-top: 12px; padding: 10px 14px; background: var(--pink); border-left: 4px solid var(--red); }
+
+.chk { display: flex; gap: 12px; width: 100%; margin: 8px 0; padding: 12px; font: inherit; text-align: left; background: #fff; border: 1px solid var(--ink); cursor: pointer; }
+.chk i { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid var(--ink); font-style: normal; font-weight: bold; }
+.chk.done { background: var(--soft); }
+.chk.done i { background: var(--ink); color: #fff; }
+.chk.done i::after { content: "\2713"; }
+.pg { height: 10px; margin: 14px 0 6px; border: 1px solid var(--ink); }
+.pg div { width: 0; height: 100%; background: var(--red); transition: width .4s; }
+.ok { margin-top: 10px; padding: 10px 14px; border: 2px solid var(--ink); font-weight: bold; }
+
+figure { margin: 16px 0 0; }
+figure img { display: block; max-width: 100%; border: 2px solid var(--ink); }
+figcaption { margin-top: 6px; font-size: 13px; color: var(--muted); }
+.falha { display: none; padding: 16px; border: 2px dashed var(--red); color: var(--red); }
+figure.miss img { display: none; }
+figure.miss .falha { display: block; }
+
+footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid var(--ink); font-size: 12px; color: var(--muted); text-align: center; }
+
+.msg { position: fixed; left: 50%; bottom: 22px; z-index: 5; max-width: 90vw; padding: 10px 16px; background: var(--red); color: #fff; font-size: 13px; text-align: center; opacity: 0; transform: translate(-50%, 20px); pointer-events: none; transition: opacity .25s, transform .25s; }
+.msg.on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 560px) {
+  .stats { grid-template-columns: 1fr; }
+  .stamp { position: static; display: inline-block; margin-bottom: 8px; }
+  .tabela th, .tabela td { padding: 6px; font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
 </head>
-<body>
+<body data-level="4">
+<div class="wrap">
 
-  <h1>PROTOCOLO ALFA</h1>
-  <div class="aviso">
-    ⚠️ ARQUIVO CLASSIFICADO — ACESSO RESTRITO A AGENTES NÍVEL 6+
+  <div class="top">
+    <a href="BASE.html">Voltar ao arquivo</a>
+    <span>Registro classificado</span>
   </div>
 
-  <div class="conteudo">
-    <h2>RESUMO DO PROTOCOLO</h2>
-    <p>
-      O Protocolo Alfa foi ativado em 18 de julho de 1994 após o desaparecimento completo de uma patrulha militar brasileira durante operação de vigilância em áreas não mapeadas da Floresta Amazônica. 
-      A missão liderada por Marcos Moderno — veterano de reconhecimento da selva — tinha como objetivo a verificação de rumores sobre figuras hostis não humanas na região.
-    </p>
+  <h1><span class="stamp">CLASSIFICADO</span><br>PROTOCOLO ALFA</h1>
+  <div class="aviso">Arquivo classificado. Acesso restrito a agentes nível 6+.</div>
 
-    <p>
-      A última comunicação recebida da equipe mencionava “sombras nas árvores” e “sussurros imitando vozes conhecidas”. Acredita-se que entidades hostis estariam testando o comportamento humano e capacidade de rastreio em área de floresta densa.
-    </p>
+  <div class="acesso">
+    <p id="lvTxt" aria-live="polite"></p>
+    <span class="dica">Seu nível:</span>
+    <button class="lv" type="button" data-n="4" aria-pressed="true">4</button>
+    <button class="lv" type="button" data-n="5" aria-pressed="false">5</button>
+    <button class="lv" type="button" data-n="6" aria-pressed="false">6</button>
+  </div>
 
-    <h2>DADOS DA PATRULHA</h2>
+  <div class="tabs" role="tablist" aria-label="Seções do protocolo">
+    <button class="tab" type="button" role="tab" data-t="resumo">Resumo</button>
+    <button class="tab" type="button" role="tab" data-t="patrulha">Patrulha</button>
+    <button class="tab" type="button" role="tab" data-t="anomalia">Anomalia</button>
+    <button class="tab" type="button" role="tab" data-t="recomendacoes">Recomendações</button>
+    <button class="tab" type="button" role="tab" data-t="registro">Registro</button>
+  </div>
+
+  <section class="panel" id="resumo" role="tabpanel">
+    <h2>Resumo do protocolo</h2>
+    <div class="stats">
+      <div class="stat"><b>1994</b><span>ano de ativação</span></div>
+      <div class="stat"><b>4</b><span>integrantes desaparecidos</span></div>
+      <div class="stat"><b>1</b><span>transmissão final registrada</span></div>
+    </div>
+    <p>O Protocolo Alfa foi ativado em 18 de julho de 1994 após o desaparecimento completo de uma patrulha militar brasileira durante operação de vigilância em áreas não mapeadas da Floresta Amazônica. A missão liderada por Marcos Moderno, veterano de reconhecimento da selva, tinha como objetivo a verificação de rumores sobre figuras hostis não humanas na região.</p>
+    <p>A última comunicação recebida da equipe mencionava “sombras nas árvores” e “sussurros imitando vozes conhecidas”. Acredita-se que <span class="tarja">entidades hostis estariam testando o comportamento humano e capacidade de rastreio</span> em área de floresta densa.</p>
+
+    <h3>Última comunicação</h3>
+    <button class="btn" type="button" id="play">Reproduzir transmissão final</button>
+    <div class="log" id="log" aria-live="polite"></div>
+    <p class="dica">Os trechos foram citados no relatório, mas a ordem em que foram transmitidos não está confirmada.</p>
+  </section>
+
+  <section class="panel" id="patrulha" role="tabpanel" hidden>
+    <h2>Dados da patrulha</h2>
+    <p class="dica">Toque em um nome para abrir o registro.</p>
     <table class="tabela">
-      <tr>
-        <th>Nome</th>
-        <th>Função</th>
-        <th>Status</th>
-      </tr>
-      <tr>
-        <td>Marcos Moderno</td>
-        <td>Líder de patrulha</td>
-        <td>Desaparecido (presumido morto)</td>
-      </tr>
-      <tr>
-        <td>Caio Ferreira</td>
-        <td>Especialista em rastreamento</td>
-        <td>Desaparecido</td>
-      </tr>
-      <tr>
-        <td>Rafael Tavares</td>
-        <td>Operador de rádio</td>
-        <td>Desaparecido</td>
-      </tr>
-      <tr>
-        <td>Patrícia V. Lima</td>
-        <td>Oficial de inteligência</td>
-        <td>Desaparecida</td>
-      </tr>
+      <thead><tr><th>Nome</th><th>Função</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr class="row"><td>Marcos Moderno</td><td>Líder de patrulha</td><td class="st">Desaparecido (<span class="tarja">presumido morto</span>)</td></tr>
+        <tr class="det" hidden><td colspan="3">Veterano de reconhecimento da selva. Liderou a missão de verificação de rumores sobre figuras hostis não humanas. Situação: desaparecido (<span class="tarja">presumido morto</span>).</td></tr>
+        <tr class="row"><td>Caio Ferreira</td><td>Especialista em rastreamento</td><td class="st">Desaparecido</td></tr>
+        <tr class="det" hidden><td colspan="3">Integrante da patrulha cujo desaparecimento motivou a ativação do protocolo. Sem informações adicionais anexadas.</td></tr>
+        <tr class="row"><td>Rafael Tavares</td><td>Operador de rádio</td><td class="st">Desaparecido</td></tr>
+        <tr class="det" hidden><td colspan="3">Integrante da patrulha cujo desaparecimento motivou a ativação do protocolo. Sem informações adicionais anexadas.</td></tr>
+        <tr class="row"><td>Patrícia V. Lima</td><td>Oficial de inteligência</td><td class="st">Desaparecida</td></tr>
+        <tr class="det" hidden><td colspan="3">Integrante da patrulha cujo desaparecimento motivou a ativação do protocolo. Sem informações adicionais anexadas.</td></tr>
+      </tbody>
     </table>
+  </section>
 
-    <h2>DESCRIÇÃO DA ANOMALIA</h2>
-    <p>
-      Entidade(s) suspeita(s) de serem **hostis metamórficas**, com habilidades vocais miméticas e deslocamento não rastreável. Foi mencionado um “sinal vermelho pulsante” antes da interrupção final da transmissão.
-      Há suspeitas de interferência psíquica. Câmeras térmicas retornaram com calor desproporcional em zonas onde não havia vida detectada.
-    </p>
+  <section class="panel" id="anomalia" role="tabpanel" hidden>
+    <h2>Descrição da anomalia</h2>
+    <p>Entidade(s) suspeita(s) de serem <strong>hostis metamórficas</strong>, com habilidades vocais miméticas e deslocamento não rastreável. Foi mencionado um “sinal vermelho pulsante” antes da interrupção final da transmissão. Há suspeitas de interferência psíquica. Câmeras térmicas retornaram com calor desproporcional em zonas onde não havia vida detectada.</p>
+    <h3>Indícios registrados</h3>
+    <p class="dica">Toque em um indício para ver o que o relatório diz sobre ele.</p>
+    <div class="chips" id="chips">
+      <button class="chip" type="button" data-k="voz" aria-pressed="false">Vozes miméticas</button>
+      <button class="chip" type="button" data-k="des" aria-pressed="false">Deslocamento não rastreável</button>
+      <button class="chip" type="button" data-k="sin" aria-pressed="false">Sinal vermelho pulsante</button>
+      <button class="chip" type="button" data-k="psi" aria-pressed="false">Interferência psíquica</button>
+      <button class="chip" type="button" data-k="ter" aria-pressed="false">Calor desproporcional</button>
+    </div>
+    <div class="detail" id="detail" aria-live="polite">Nenhum indício selecionado.</div>
+  </section>
 
-    <h2>RECOMENDAÇÕES</h2>
-    <ul>
-      <li>Evitar operações solo em áreas sem cobertura de satélite.</li>
-      <li>Qualquer padrão auditivo incomum deve ser tratado como ameaça real.</li>
-      <li>Relatos sobre “vozes familiares” em locais de isolamento devem ser ignorados e reportados imediatamente.</li>
-    </ul>
-<button class="btn90" onclick="mostrarImagem()">Abrir imagem adicional</button>
-<img id="imagemExtra" src="kin_registro2.png" alt="Imagem extra do Kin" style="display:none; max-width:100%; border-radius:6px; margin-top: 15px; border: 2px solid #00ff00;">
+  <section class="panel" id="recomendacoes" role="tabpanel" hidden>
+    <h2>Recomendações</h2>
+    <p class="dica">Marque cada recomendação ao confirmar a leitura.</p>
+    <button class="chk" type="button" aria-pressed="false"><i></i><span>Evitar operações solo em áreas sem cobertura de satélite.</span></button>
+    <button class="chk" type="button" aria-pressed="false"><i></i><span>Qualquer padrão auditivo incomum deve ser tratado como ameaça real.</span></button>
+    <button class="chk" type="button" aria-pressed="false"><i></i><span>Relatos sobre “vozes familiares” em locais de isolamento devem ser ignorados e reportados imediatamente.</span></button>
+    <div class="pg" aria-hidden="true"><div id="bar"></div></div>
+    <p class="dica" id="prog">0 de 3 confirmadas</p>
+    <div class="ok" id="ok" hidden>Leitura confirmada. Protocolo Alfa ciente.</div>
+  </section>
+
+  <section class="panel" id="registro" role="tabpanel" hidden>
+    <h2>Registro adicional</h2>
+    <p>Imagem complementar anexada ao protocolo.</p>
+    <button class="btn" type="button" id="imgBtn" aria-expanded="false">Abrir imagem adicional</button>
+    <figure id="fig" hidden>
+      <img src="kin_registro2.png" alt="Imagem extra do Kin">
+      <div class="falha">Não foi possível carregar kin_registro2.png. Confirme se o arquivo está na mesma pasta desta página.</div>
+      <figcaption>Imagem extra do Kin</figcaption>
+    </figure>
+  </section>
+
+  <footer>Protocolo Alfa. Arquivo classificado.</footer>
+</div>
+<div class="msg" id="msg" role="status"></div>
 
 <script>
-  function mostrarImagem() {
-    const img = document.getElementById('imagemExtra');
-    img.style.display = img.style.display === 'none' ? 'block' : 'none';
-  }
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+const msg = $('#msg');
+let msgTimer;
+function say(t) {
+  msg.textContent = t;
+  msg.classList.add('on');
+  clearTimeout(msgTimer);
+  msgTimer = setTimeout(() => msg.classList.remove('on'), 2600);
+}
+
+function setLevel(n) {
+  document.body.dataset.level = n;
+  $$('.lv').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.n === n)));
+  $('#lvTxt').textContent = n >= 6
+    ? 'Nível ' + n + ': trechos tarjados liberados.'
+    : 'Nível ' + n + ': trechos tarjados bloqueados. Escolha o nível 6 para liberar.';
+}
+$$('.lv').forEach(b => b.addEventListener('click', () => setLevel(+b.dataset.n)));
+setLevel(4);
+
+$$('.tarja').forEach(t => {
+  t.tabIndex = 0;
+  t.addEventListener('click', e => {
+    if (+document.body.dataset.level >= 6) return;
+    e.stopPropagation();
+    t.classList.remove('no');
+    void t.offsetWidth;
+    t.classList.add('no');
+    say('Acesso negado. Este trecho exige nível 6 ou superior.');
+  });
+  t.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t.click(); }
+  });
+});
+
+const tabs = $$('.tab');
+const panels = $$('.panel');
+function show(id, push = true) {
+  if (!panels.some(p => p.id === id)) id = 'resumo';
+  tabs.forEach(t => {
+    const on = t.dataset.t === id;
+    t.setAttribute('aria-selected', String(on));
+    t.tabIndex = on ? 0 : -1;
+  });
+  panels.forEach(p => { p.hidden = p.id !== id; });
+  if (push) { try { history.replaceState(null, '', '#' + id); } catch (e) {} }
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => show(t.dataset.t));
+  t.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    next.focus();
+    show(next.dataset.t);
+  });
+});
+addEventListener('hashchange', () => show(location.hash.slice(1), false));
+show(location.hash.slice(1) || 'resumo', false);
+
+const LINES = [
+  ['Áudio parcial', '“sombras nas árvores”'],
+  ['Áudio parcial', '“sussurros imitando vozes conhecidas”'],
+  ['Registro', 'menção a um “sinal vermelho pulsante”'],
+  ['Sistema', 'transmissão interrompida']
+];
+let timers = [];
+$('#play').addEventListener('click', () => {
+  timers.forEach(clearTimeout);
+  timers = [];
+  const box = $('#log');
+  box.innerHTML = '';
+  $('#play').textContent = 'Reproduzir novamente';
+  LINES.forEach((l, i) => {
+    timers.push(setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = 'ln' + (i === LINES.length - 1 ? ' end' : '');
+      d.innerHTML = '<b>[' + l[0] + ']</b> ' + l[1];
+      box.appendChild(d);
+    }, 200 + i * 1100));
+  });
+});
+
+$$('tr.row').forEach(r => {
+  const det = r.nextElementSibling;
+  r.tabIndex = 0;
+  r.setAttribute('aria-expanded', 'false');
+  const toggle = () => {
+    const open = det.hidden;
+    $$('tr.det').forEach(x => { x.hidden = true; });
+    $$('tr.row').forEach(x => x.setAttribute('aria-expanded', 'false'));
+    det.hidden = !open;
+    r.setAttribute('aria-expanded', String(open));
+  };
+  r.addEventListener('click', toggle);
+  r.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  });
+});
+
+const INDICIOS = {
+  voz: 'A entidade suspeita tem habilidades vocais miméticas. A última comunicação da equipe citou “sussurros imitando vozes conhecidas”.',
+  des: 'O deslocamento das entidades não pôde ser rastreado. Acredita-se que elas testem o comportamento humano e a capacidade de rastreio em floresta densa.',
+  sin: 'Um “sinal vermelho pulsante” foi mencionado antes da interrupção final da transmissão. O relatório não esclarece sua natureza.',
+  psi: 'Há suspeitas de interferência psíquica. O relatório não apresenta confirmação.',
+  ter: 'As câmeras térmicas retornaram calor desproporcional em zonas onde não havia vida detectada.'
+};
+$$('.chip').forEach(c => c.addEventListener('click', () => {
+  $$('.chip').forEach(x => x.setAttribute('aria-pressed', String(x === c)));
+  $('#detail').textContent = INDICIOS[c.dataset.k];
+}));
+
+$$('.chk').forEach(c => c.addEventListener('click', () => {
+  c.classList.toggle('done');
+  c.setAttribute('aria-pressed', String(c.classList.contains('done')));
+  const n = $$('.chk.done').length;
+  $('#bar').style.width = (n / 3 * 100) + '%';
+  $('#prog').textContent = n + ' de 3 confirmadas';
+  $('#ok').hidden = n < 3;
+}));
+
+const fig = $('#fig');
+$('#imgBtn').addEventListener('click', e => {
+  const open = fig.hidden;
+  fig.hidden = !open;
+  e.currentTarget.setAttribute('aria-expanded', String(open));
+  e.currentTarget.textContent = open ? 'Fechar imagem adicional' : 'Abrir imagem adicional';
+});
+$('img', fig).addEventListener('error', () => fig.classList.add('miss'));
 </script>
-
-<style>
-  .btn90 {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 16px;
-    color: #00ff00;
-    background-color: #000;
-    border: 3px solid #00ff00;
-    padding: 8px 18px;
-    cursor: pointer;
-    box-shadow:
-      0 0 5px #00ff00,
-      inset 0 0 10px #00ff00;
-    transition: background-color 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
-
-  .btn90:hover {
-    background-color: #00ff00;
-    color: #000;
-    box-shadow:
-      0 0 10px #00ff00,
-      inset 0 0 15px #000;
-  }
-</style>
-    </div>
-  </div>
 </body>
 </html>
